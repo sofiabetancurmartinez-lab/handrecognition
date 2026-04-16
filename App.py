@@ -1,39 +1,47 @@
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 
-st.title("Tablero para dibujo")
+st.set_page_config(page_title="Mi tablero creativo", page_icon="🎨", layout="centered")
+
+st.title("🎨 Mi tablero creativo")
+st.markdown("Personaliza tu lienzo y dibuja libremente.")
 
 with st.sidebar:
-    st.subheader("Propiedades del Tablero")
+    st.header("⚙️ Configuración")
 
-    # Canvas dimensions (moved to the top)
-    st.subheader("Dimensiones del Tablero")
-    canvas_width = st.slider("Ancho del tablero", 300, 700, 500, 50)
-    canvas_height = st.slider("Alto del tablero", 200, 600, 300, 50)
+    st.markdown("### 📐 Tamaño del lienzo")
+    canvas_width = st.slider("Ancho", 300, 900, 600, 50)
+    canvas_height = st.slider("Alto", 200, 700, 400, 50)
 
-    # Drawing mode selector
+    st.divider()
+
+    st.markdown("### ✏️ Herramienta")
     drawing_mode = st.selectbox(
-        "Herramienta de Dibujo:",
+        "Selecciona una herramienta",
         ("freedraw", "line", "rect", "circle", "transform", "polygon", "point"),
     )
 
-    # Stroke width slider
-    stroke_width = st.slider("Selecciona el ancho de línea", 1, 30, 15)
+    stroke_width = st.slider("Grosor del trazo", 1, 25, 8)
+    stroke_color = st.color_picker("Color del trazo", "#FFFFFF")
+    fill_color = st.color_picker("Color de relleno", "#FFB347")
+    bg_color = st.color_picker("Color de fondo", "#1E1E1E")
 
-    # Stroke color picker
-    stroke_color = st.color_picker("Color de trazo", "#FFFFFF")
+    st.divider()
 
-    # Background color
-    bg_color = st.color_picker("Color de fondo", "#000000")
+    clear_canvas = st.button("🗑️ Limpiar lienzo")
 
-# Create a canvas component with dynamic key
+st.markdown("#### 🖌️ Área de dibujo")
+
 canvas_result = st_canvas(
-    fill_color="rgba(255, 165, 0, 0.3)",
+    fill_color=fill_color + "80",  # transparencia
     stroke_width=stroke_width,
     stroke_color=stroke_color,
     background_color=bg_color,
     height=canvas_height,
     width=canvas_width,
     drawing_mode=drawing_mode,
-    key=f"canvas_{canvas_width}_{canvas_height}",  # Dynamic key based on dimensions
+    key=f"canvas_{canvas_width}_{canvas_height}_{clear_canvas}",
 )
+
+if canvas_result.json_data is not None:
+    st.success("✨ Tu dibujo se está registrando correctamente.")
